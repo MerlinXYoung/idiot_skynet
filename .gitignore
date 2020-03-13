@@ -2,7 +2,9 @@
 build/*
 
 #VS Code
-.vscode
+.vscode/
 
-luaclib/*.so
+luaclib/*
 
+#
+!.gitkeep
