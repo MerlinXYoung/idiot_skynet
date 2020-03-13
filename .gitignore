@@ -1,0 +1,8 @@
+#CMake build dir
+build/*
+
+#VS Code
+.vscode
+
+luaclib/*.so
+
