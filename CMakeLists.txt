@@ -10,6 +10,8 @@ message(STATUS "protoc:${Protobuf_BIN_PATH}")
 
 set(SKYNET_PATH ${CMAKE_CURRENT_SOURCE_DIR}/skynet)
 set(SKYNET_TARGET ${SKYNET_PATH}/skynet 
+${SKYNET_PATH}/cservice/gate.so ${SKYNET_PATH}/cservice/harbor.so 
+${SKYNET_PATH}/cservice/logger.so ${SKYNET_PATH}/cservice/snlua.so 
 ${SKYNET_PATH}/luaclib/bson.so ${SKYNET_PATH}/luaclib/client.so 
 ${SKYNET_PATH}/luaclib/lpeg.so ${SKYNET_PATH}/luaclib/md5.so 
 ${SKYNET_PATH}/luaclib/skynet.so ${SKYNET_PATH}/luaclib/sproto.so
@@ -37,7 +39,8 @@ add_library(cjson SHARED ${CJSON_SRCS})
 set_target_properties(cjson PROPERTIES 
     RUNTIME_OUTPUT_DIRECTORY ${LUACLIB}
     LIBRARY_OUTPUT_DIRECTORY ${LUACLIB}
-    PREFIX "")
+    PREFIX ""
+)
 # add_dependencies(cjson ${SKYNET} )
 
 set(LFS_SRCS ${THIREDS}/luafilesystem/src/lfs.c )
@@ -50,12 +53,14 @@ set_target_properties(lfs PROPERTIES
 
     # add_dependencies(lfs ${SKYNET})
 add_custom_command(OUTPUT ${LUACLIB}/protobuf.so
-    # COMMAND export PATH=$ENV{PATH}:${Protobuf_BIN_PATH}
-    COMMAND make -j8 
+    # COMMAND export C_INCLUDE_PATH="$ENV{C_INCLUDE_PATH}:${LUADIR}"
+    COMMAND chmod a+x ./build_pbc.sh
+    COMMAND ./build_pbc.sh 
+    # COMMAND make -j8 
     # COMMAND make -C binding -j8
-    COMMAND make -C binding/lua53 -j8
-    COMMAND cp binding/lua53/protobuf.so ${LUACLIB}/
-    WORKING_DIRECTORY ${THIREDS}/pbc
+    # COMMAND make -C binding/lua53 -j8
+    COMMAND cp pbc/binding/lua53/protobuf.so ${LUACLIB}/
+    WORKING_DIRECTORY ${THIREDS}
     # DEPENDS ${SKYNET_TARGET}
 )
 
